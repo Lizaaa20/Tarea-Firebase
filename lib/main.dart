@@ -3,33 +3,45 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
-import 'home_page.dart';
+import 'widgets.dart';
 
-void main() {
-  runApp(const App());
-}
+class AuthFunc extends StatelessWidget {
+  const AuthFunc({
+    super.key,
+    required this.loggedIn,
+    required this.signOut,
+  });
 
-class App extends StatelessWidget {
-  const App({super.key});
+  final bool loggedIn;
+  final void Function() signOut;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Firebase Meetup',
-      theme: ThemeData(
-        buttonTheme: Theme.of(context).buttonTheme.copyWith(
-              highlightColor: Colors.deepPurple,
-            ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        textTheme: GoogleFonts.robotoTextTheme(
-          Theme.of(context).textTheme,
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 24, bottom: 8),
+          child: StyledButton(
+              onPressed: () {
+                !loggedIn ? context.push('/sign-in') : signOut();
+              },
+              child: !loggedIn ? const Text('RSVP') : const Text('Logout')),
         ),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        useMaterial3: true,
-      ),
-      home: const HomePage(),
+        Visibility(
+          visible: loggedIn,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 24, bottom: 8),
+            child: StyledButton(
+                onPressed: () {
+                  context.push('/profile');
+                },
+                child: const Text('Profile')),
+          ),
+        )
+      ],
     );
   }
 }
+
